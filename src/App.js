@@ -1,22 +1,33 @@
-import logo from './logo.svg';
+import React, { useState } from 'react';
+import FileUpload from './FileUpload';
+import ColumnSelection from './ColumnSelection';
 import './App.css';
 
 function App() {
+  const [jsonData, setJsonData] = useState(null);
+  const [selectedColumns, setSelectedColumns] = useState([]);
+
+  const handleFileUpload = (file) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const data = JSON.parse(reader.result);
+      setJsonData(data);
+    };
+    reader.readAsText(file);
+  };
+
+
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <FileUpload handleFileUpload={handleFileUpload} />
+        {jsonData && (
+          <ColumnSelection
+            jsonData={jsonData}
+            selectedColumns={selectedColumns}
+            setSelectedColumns={setSelectedColumns}
+          />
+        )}
       </header>
     </div>
   );
